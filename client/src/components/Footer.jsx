@@ -25,7 +25,9 @@ const MyFooter = () => {
             <Footer.Title title="Follow us" />
             <Footer.LinkGroup col>
               <Footer.Link href="#">Github</Footer.Link>
-              <Footer.Link href="#">Discord</Footer.Link>
+              <Footer.Link href="https://github.com/NeyuD96155">
+                Discord
+              </Footer.Link>
             </Footer.LinkGroup>
           </div>
           {/* Legal Section */}
