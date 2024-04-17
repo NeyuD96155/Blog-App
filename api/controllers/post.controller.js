@@ -1,13 +1,24 @@
 // File: controllers/PostController.js
 import Post from '../models/Post.js';
 
+// Utility function to handle the response
+const handleResponse = (res, status, data) => {
+    res.status(status).json(data);
+};
+
+// Error handling utility function
+const handleError = (res, err, message = "An error occurred", statusCode = 500) => {
+    console.error(err); // Log to console for debugging
+    res.status(statusCode).json({ message: message, details: err.message });
+};
+
 // Get all posts
 const getAllPosts = async (req, res) => {
     try {
         const posts = await Post.find().populate('author', 'username email');
-        res.status(200).json(posts);
+        handleResponse(res, 200, posts);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        handleError(res, err);
     }
 };
 
@@ -16,46 +27,46 @@ const getPostById = async (req, res) => {
     try {
         const post = await Post.findById(req.params.id).populate('author', 'username email');
         if (!post) {
-            return res.status(404).json({ message: "Post not found" });
+            return handleResponse(res, 404, { message: "Post not found" });
         }
-        res.status(200).json(post);
+        handleResponse(res, 200, post);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        handleError(res, err);
     }
 };
 
 // Create a new post
 const createPost = async (req, res) => {
-    const post = new Post({
-        title: req.body.title,
-        body: req.body.body,
-        author: req.body.author,  // Ensure author ID is provided
-        tags: req.body.tags,
-        status: req.body.status
-    });
+    const { title, body, author, tags, status } = req.body;
+    const post = new Post({ title, body, author, tags, status });
+
     try {
         const newPost = await post.save();
-        res.status(201).json(newPost);
+        handleResponse(res, 201, newPost);
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        handleError(res, err, "Failed to create post", 400);
     }
 };
 
 // Update a post
 const updatePost = async (req, res) => {
+    const { title, body, tags, status } = req.body;
+
     try {
         const post = await Post.findById(req.params.id);
         if (!post) {
-            return res.status(404).json({ message: "Post not found" });
+            return handleResponse(res, 404, { message: "Post not found" });
         }
-        post.title = req.body.title || post.title;
-        post.body = req.body.body || post.body;
-        post.tags = req.body.tags || post.tags;
-        post.status = req.body.status || post.status;
+
+        post.title = title || post.title;
+        post.body = body || post.body;
+        post.tags = tags || post.tags;
+        post.status = status || post.status;
+
         const updatedPost = await post.save();
-        res.status(200).json(updatedPost);
+        handleResponse(res, 200, updatedPost);
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        handleError(res, err, "Failed to update post", 400);
     }
 };
 
@@ -64,12 +75,13 @@ const deletePost = async (req, res) => {
     try {
         const post = await Post.findById(req.params.id);
         if (!post) {
-            return res.status(404).json({ message: "Post not found" });
+            return handleResponse(res, 404, { message: "Post not found" });
         }
+
         await post.remove();
-        res.status(200).json({ message: "Deleted Post" });
+        handleResponse(res, 200, { message: "Deleted Post" });
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        handleError(res, err, "Failed to delete post");
     }
 };
 
