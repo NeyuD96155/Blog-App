@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 
-const postSchema = new mongoose.Schema(
+const { Schema } = mongoose;
+
+const postSchema = new Schema(
   {
     title: {
       type: String,
@@ -12,9 +14,9 @@ const postSchema = new mongoose.Schema(
       required: true,
     },
     author: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       required: true,
-      ref: 'User',  // Liên kết với User model
+      ref: 'User',  // Link to User model
     },
     tags: [
       {
@@ -35,16 +37,17 @@ const postSchema = new mongoose.Schema(
           default: Date.now,
         },
         commentBy: {
-          type: mongoose.Schema.Types.ObjectId,
+          type: Schema.Types.ObjectId,
           ref: 'User',
         },
       },
     ],
   },
   {
-    timestamps: true,  // Sử dụng cấu hình timestamp mặc định
+    timestamps: true,  // Use default timestamp configuration
   }
 );
 
 const Post = mongoose.model("Post", postSchema);
+
 export default Post;
