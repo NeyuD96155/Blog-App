@@ -1,5 +1,6 @@
 import { Button, Navbar, TextInput } from "flowbite-react";
 import { Link, useLocation } from "react-router-dom";
+import { HashLink } from 'react-router-hash-link';
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon } from "react-icons/fa";
 export default function Header() {
@@ -49,6 +50,12 @@ export default function Header() {
         </Navbar.Link>
         <Navbar.Link active={path === "/project"} as={"div"}>
           <Link to="/project">Project</Link>
+        </Navbar.Link>
+        <Navbar.Link active={path === "/about#contact_us"} as={"div"}>
+          <HashLink to="/about#contact_us">Contact Us</HashLink>
+        </Navbar.Link>
+        <Navbar.Link active={path === "/register"} as={"div"}>
+          <Link to="/register">Register</Link>
         </Navbar.Link>
       </Navbar.Collapse>
     </Navbar>
